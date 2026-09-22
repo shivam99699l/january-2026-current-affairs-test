@@ -24,9 +24,12 @@ body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:
 .option{display:block;width:100%;text-align:left;border:1px solid var(--border);background:#fff;border-radius:10px;padding:12px;margin:8px 0;font-size:15px;cursor:pointer}
 .option:hover{border-color:var(--accent)}
 .option.selected{border-color:var(--accent);background:#eef4ff}
-.option.correct{border-color:var(--good);background:#e8f7ee}
-.option.wrong{border-color:var(--bad);background:#fdecec}
+.option.correct{border-color:var(--good);background:#e8f7ee;color:#11652f}
+.option.wrong{border-color:var(--bad);background:#fdecec;color:#a61b1b}
 .option:disabled{cursor:default}
+.option.result-correct::after{content:'✓';float:right;font-size:20px;font-weight:800;color:var(--good);margin-left:10px}
+.option.result-wrong::after{content:'✕';float:right;font-size:20px;font-weight:800;color:var(--bad);margin-left:10px}
+.option.correct-answer::after{content:'✓';float:right;font-size:20px;font-weight:800;color:var(--good);margin-left:10px}
 .feedback{margin-top:12px;padding:12px;border-radius:10px;background:#f3f5f8;line-height:1.5}
 .feedback.good{background:#e8f7ee}
 .feedback.bad{background:#fdecec}
@@ -46,6 +49,11 @@ body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:
     <div class="stat">Attempted: <span id="attempted">0</span>/140</div>
   </div>
   <div class="progress"><div id="progress"></div></div>
+  <div style="margin-top:8px;font-size:12px;color:#667085">
+    <span style="color:#16803c;font-weight:700">✓ Correct</span>
+    &nbsp;&nbsp;
+    <span style="color:#c62828;font-weight:700">✕ Incorrect</span>
+  </div>
 </div>
 
 <div class="container">
@@ -84,8 +92,14 @@ function answer(i,letter,clicked){
   card.querySelectorAll('.option').forEach(b=>{
     b.disabled=true;
     const l=(b.textContent.match(/^\(([A-D])\)/)||[])[1];
-    if(l===q.correct) b.classList.add('correct');
-    if(l===letter && letter!==q.correct) b.classList.add('wrong');
+    if(l===q.correct) {
+      b.classList.add('correct');
+      if(letter===q.correct) b.classList.add('result-correct');
+      else b.classList.add('correct-answer');
+    }
+    if(l===letter && letter!==q.correct) {
+      b.classList.add('wrong','result-wrong');
+    }
     if(l===letter) b.classList.add('selected');
   });
   const fb=document.getElementById('fb'+i);
