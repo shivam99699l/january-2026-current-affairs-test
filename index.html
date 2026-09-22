@@ -35,6 +35,11 @@ body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:
 .feedback.bad{background:#fdecec}
 .explanation{margin-top:8px}
 
+
+.finish-test-btn{border:0;background:#172033;color:#fff;padding:10px 16px;border-radius:9px;font-size:13px;font-weight:800;cursor:pointer}
+.finish-test-btn:hover{background:#0f172a}
+.finish-summary{margin-top:12px;padding:14px;border-radius:10px;background:#f8fafc;border:1px solid var(--border);line-height:1.6}
+
 .collections{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
 .collection-btn{border:1px solid var(--border);background:#fff;color:var(--text);padding:7px 10px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
 .collection-btn:hover{border-color:var(--accent)}
@@ -64,6 +69,9 @@ body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:
     <span style="color:#16803c;font-weight:700">✓ Correct</span>
     &nbsp;&nbsp;
     <span style="color:#c62828;font-weight:700">✕ Incorrect</span>
+  </div>
+  <div style="margin-top:10px">
+    <button class="finish-test-btn" onclick="finishTest()">Finish Test</button>
   </div>
   <div class="collections">
     <button class="collection-btn" onclick="toggleCollection('correct')">✓ Correct Collection <span id="correctCount2">0</span></button>
@@ -195,6 +203,27 @@ function updateStats(){
       ' correct ('+pct+'%)<br><br><button class="reset" onclick="window.scrollTo({top:0,behavior:\'smooth\'})">Review Test</button>';
   }
 }
+
+function finishTest(){
+  const attempted=state.filter(x=>x!==null).length;
+  const correct=state.filter((x,i)=>x!==null && x===questions[i].correct).length;
+  const wrong=attempted-correct;
+  const unvisited=questions.length-attempted;
+  const pct=(correct/questions.length*100).toFixed(2);
+
+  const f=document.getElementById('final');
+  f.style.display='block';
+  f.innerHTML='<strong>Test Finished</strong>'+
+    '<div class="finish-summary">'+
+    '<strong>Correct:</strong> '+correct+'<br>'+
+    '<strong>Incorrect:</strong> '+wrong+'<br>'+
+    '<strong>Unvisited:</strong> '+unvisited+'<br>'+
+    '<strong>Attempted:</strong> '+attempted+' / '+questions.length+'<br>'+
+    '<strong>Score:</strong> '+correct+' / '+questions.length+' ('+pct+'%)'+
+    '</div>';
+  f.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
 render();
 </script>
 </body>
